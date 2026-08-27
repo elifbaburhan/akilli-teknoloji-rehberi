@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teknoloji Karşılaştırma & Akıllı Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --subtext-color: #555;
+            --border-color: #3498db;
+            --panel-bg: #eef2f5;
+            --box-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --subtext-color: #aaa;
+            --border-color: #2980b9;
+            --panel-bg: #2a2a2a;
+            --box-bg: #2d2d2d;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; transition: background-color 0.3s, color 0.3s; }
+        
+        .header-container { max-width: 1200px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; }
+        .theme-toggle-btn { padding: 10px 16px; background: var(--card-bg); color: var(--text-color); border: 2px solid var(--border-color); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .theme-toggle-btn:hover { transform: scale(1.05); }
+
+        h1, h2 { text-align: center; color: var(--text-color); }
+
+        .fav-section { max-width: 1200px; margin: 0 auto 30px auto; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 5px solid #e74c3c; }
+        .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+
+        /* SOHBET BOTU STİLLERİ */
+        .chat-section { max-width: 1200px; margin: 0 auto 30px auto; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 5px solid #9b59b6; }
+        .chat-box { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 10px; background: var(--panel-bg); border-radius: 8px; margin-bottom: 15px; }
+        .chat-bubble { padding: 10px 14px; border-radius: 10px; max-width: 80%; font-size: 14px; line-height: 1.4; }
+        .chat-bubble.bot { background: #9b59b6; color: white; align-self: flex-start; }
+        .chat-bubble.user { background: #3498db; color: white; align-self: flex-end; }
+        .chat-input-box { display: flex; gap: 10px; }
+        .chat-input-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: var(--card-bg); color: var(--text-color); }
+        .chat-input-box button { padding: 12px 20px; background: #9b59b6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .chat-input-box button:hover { background: #8e44ad; }
+        .chat-recommend-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 10px; }
+
+        .guide-section { max-width: 1200px; margin: 0 auto 30px auto; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .guide-card { background: var(--card-bg); padding: 15px; border-radius: 10px; border-left: 5px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .guide-card h3 { margin: 0 0 8px 0; font-size: 16px; color: var(--text-color); }
+        .guide-card p { margin: 0; font-size: 13px; color: var(--subtext-color); line-height: 1.4; }
+        .guide-badge { background: #e8f4fc; color: #2980b9; font-size: 11px; padding: 3px 6px; border-radius: 4px; font-weight: bold; margin-top: 8px; display: inline-block; }
+
+        .compare-panel { max-width: 1200px; margin: 0 auto 30px auto; background: var(--panel-bg); padding: 20px; border-radius: 12px; border: 2px dashed var(--border-color); }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .compare-card { background: var(--card-bg); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        .filter-box { max-width: 600px; margin: 0 auto 20px auto; display: flex; gap: 10px; }
+        .filter-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background: var(--card-bg); color: var(--text-color); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .title { font-size: 16px; font-weight: bold; color: var(--text-color); margin-bottom: 5px; padding-right: 35px; }
+        .rating-badge { font-size: 13px; color: #f39c12; font-weight: bold; margin-bottom: 5px; }
+        
+        .store-badge { font-size: 12px; background: #e8f8f5; color: #16a085; padding: 4px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 10px; border: 1px solid #a3e4d7; }
+        [data-theme="dark"] .store-badge { background: #1e3a34; color: #2ecc71; border-color: #27ae60; }
+
+        .price { font-size: 18px; color: #27ae60; font-weight: bold; }
+        
+        .discount-badge { position: absolute; top: 12px; left: 12px; background: #e74c3c; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .fav-heart-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.05); border: none; font-size: 20px; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .btn { padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; text-align: center; font-weight: bold; }
+        .btn:hover { background: #2980b9; }
+        .btn-info { background: #2ecc71; }
+        .btn-chart { background: #f39c12; }
+        .btn-clear { background: #e74c3c; margin-top: 10px; }
+
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card-bg); color: var(--text-color); width: 90%; max-width: 650px; padding: 25px; border-radius: 12px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 22px; cursor: pointer; color: var(--subtext-color); font-weight: bold; }
+        
+        .info-box { background: var(--box-bg); border-left: 4px solid #3498db; padding: 12px; margin-bottom: 12px; border-radius: 4px; }
+        .info-box h4 { margin: 0 0 5px 0; color: var(--text-color); }
+        .info-box p { margin: 0; font-size: 14px; color: var(--subtext-color); }
+        .usage-box { background: var(--box-bg); border-left: 4px solid #2ecc71; padding: 12px; border-radius: 4px; margin-top: 15px; }
+        .usage-box h4 { margin: 0 0 5px 0; color: #2ecc71; }
+
+        .store-list-box { margin-top: 20px; background: var(--box-bg); border: 1px solid #eee; padding: 15px; border-radius: 8px; }
+        .store-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #ddd; }
+        .store-item:last-child { border-bottom: none; }
+        .store-item a { background: #e67e22; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .store-item a:hover { background: #d35400; }
+
+        .review-section { margin-top: 25px; border-top: 1px solid #ccc; padding-top: 15px; }
+        .review-item { background: var(--box-bg); padding: 10px; border-radius: 6px; margin-bottom: 10px; }
+        .review-item strong { color: var(--text-color); }
+        .review-item span { color: #f39c12; font-size: 12px; float: right; }
+        .review-form { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .review-form input, .review-form select, .review-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: var(--card-bg); color: var(--text-color); }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1 style="margin: 0;">Laptop Karşılaştırma & Akıllı Platform</h1>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Karanlık Mod</button>
+    </div>
+
+    <div class="fav-section">
+        <h2>❤️ Favorilerim (<span id="favCount">0</span>)</h2>
+        <div id="favContainer" class="fav-grid">
+            <p style="grid-column: 1/-1; text-align: center; color: var(--subtext-color);">Henüz favori ürün eklemediniz.</p>
+        </div>
+    </div>
+
+    <!-- 🤖 AKILLI SOHBET BOTU PENCERESİ -->
+    <div class="chat-section">
+        <h2>🤖 Bana Laptop Öner (Akıllı Asistan)</h2>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-bubble bot">
+                Merhaba! Ben sizin teknoloji asistanınızım. 💻<br>
+                Nasıl bir bilgisayar arıyorsunuz? (Örn: <i>"Oyun oynamak istiyorum"</i>, <i>"Yazılım için 16GB RAM laptop"</i>, <i>"Ofis için şarjı uzun giden"</i>)
+            </div>
+        </div>
+        <div class="chat-input-box">
+            <input type="text" id="chatInput" placeholder="Ne amaçla kullanılacak bir bilgisayar arıyorsunuz?" onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()">Gönder 🚀</button>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>💡 Hangi Özellik Ne İşe Yarar?</h2>
+        <div class="guide-grid">
+            <div class="guide-card">
+                <h3>⚡ İşlemci (CPU)</h3>
+                <p>Bilgisayarın beynidir. Tüm komutların işlenme hızını belirler.</p>
+                <span class="guide-badge">🎯 Hızlı çalışma ve donmama</span>
+            </div>
+            <div class="guide-card">
+                <h3>🧠 RAM (Bellek)</h3>
+                <p>Çalışma masanızdır. Çoklu sekme ve program açık tutmanızı sağlar.</p>
+                <span class="guide-badge">🎯 Rahat çoklu görev</span>
+            </div>
+            <div class="guide-card">
+                <h3>🚀 SSD (Depolama)</h3>
+                <p>Bilgisayarın ve uygulamaların saniyeler içinde açılmasını sağlar.</p>
+                <span class="guide-badge">🎯 Anında açılan sistem</span>
+            </div>
+            <div class="guide-card">
+                <h3>🎮 Ekran Kartı (GPU)</h3>
+                <p>Oyun, 3D çizim ve video montaj performansını doğrudan etkiler.</p>
+                <span class="guide-badge">🎯 Grafik ve Oyun</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="compare-panel">
+        <h2>Karşılaştırma Paneli (Maksimum 2 Ürün)</h2>
+        <div class="compare-grid" id="compareContainer">
+            <div class="compare-card" style="text-align:center; color:var(--subtext-color);">1. Ürünü Seçin</div>
+            <div class="compare-card" style="text-align:center; color:var(--subtext-color);">2. Ürünü Seçin</div>
+        </div>
+        <button class="btn btn-clear" style="display:none; width: 100%;" id="clearBtn" onclick="clearCompare()">Karşılaştırmayı Temizle</button>
+    </div>
+
+    <div class="filter-box">
+        <input type="text" id="searchInput" placeholder="Tüm ürünlerde ara..." onkeyup="filterProducts()">
+    </div>
+
+    <div id="product-container" class="grid">Yükleniyor...</div>
+
+    <!-- ÖZELLİK VE YORUM MODAL -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('detailModal')">&times;</span>
+            <h2 id="modalTitle" style="text-align:left; font-size: 20px; margin-top:0;"></h2>
+            <hr style="border:0; border-top: 1px solid #eee; margin-bottom: 15px;">
+            
+            <h3>🔍 Bu Bilgisayarın Tüm Özellikleri Ne Anlama Geliyor?</h3>
+            <div id="modalSpecs"></div>
+
+            <div class="usage-box">
+                <h4>🎯 Hangi Alanlarda Kullanım İçin Uygundur?</h4>
+                <p id="modalUsage"></p>
+            </div>
+
+            <div class="store-list-box">
+                <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar</h4>
+                <div id="modalStores"></div>
+            </div>
+
+            <div class="review-section">
+                <h3>💬 Kullanıcı Yorumları & Puanlama</h3>
+                <div id="reviewsList">Yorumlar yükleniyor...</div>
+
+                <div class="review-form">
+                    <h4>Yorum Yap & Puan Ver</h4>
+                    <input type="text" id="reviewerName" placeholder="Adınız">
+                    <select id="reviewRating">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                        <option value="3">⭐⭐⭐ (3/5)</option>
+                        <option value="2">⭐⭐ (2/5)</option>
+                        <option value="1">⭐ (1/5)</option>
+                    </select>
+                    <textarea id="reviewComment" rows="3" placeholder="Bu laptop hakkındaki deneyiminiz..."></textarea>
+                    <button class="btn btn-info" id="submitReviewBtn">Yorumu Gönder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chartModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('chartModal')">&times;</span>
+            <h2 id="chartTitle" style="text-align:left; font-size: 18px; margin-top:0;"></h2>
+            <hr style="border:0; border-top: 1px solid #eee; margin-bottom: 15px;">
+            <h3>📈 Son 3 Aylık Fiyat Geçmişi</h3>
+            <canvas id="priceChartCanvas" style="width:100%; height:250px;"></canvas>
+            <div id="discountStatus" style="margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; text-align: center;"></div>
+        </div>
+    </div>
+
+    <script>
+        let allLaptops = [];
+        let selectedLaptops = [];
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let currentLaptopId = null;
+        let priceChart = null;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const btn = document.getElementById('themeBtn');
+            btn.innerHTML = theme === 'dark' ? '☀️ Aydınlık Mod' : '🌙 Karanlık Mod';
+        }
+
+        async function fetchLaptops() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/laptops');
+                allLaptops = await response.json();
+                renderProducts(allLaptops);
+                renderFavorites();
+            } catch (error) {
+                console.error('Veri çekme hatası:', error);
+                document.getElementById('product-container').innerText = 'Veriler yüklenirken hata oluştu!';
+            }
+        }
+
+        function renderProducts(laptops) {
+            const container = document.getElementById('product-container');
+            container.innerHTML = '';
+
+            if(laptops.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Ürün bulunamadı.</p>';
+                return;
+            }
+
+            laptops.forEach(laptop => {
+                const card = createProductCard(laptop);
+                container.appendChild(card);
+            });
+        }
+
+        function createProductCard(laptop) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const isDiscounted = laptop.id % 2 === 0;
+            const badgeHTML = isDiscounted ? '<div class="discount-badge">🔥 Fırsat</div>' : '';
+            const isFav = favorites.some(f => f.id === laptop.id);
+            const ratingText = laptop.review_count > 0 ? `⭐ ${laptop.avg_rating} (${laptop.review_count} Yorum)` : `⭐ Henüz puanlanmadı`;
+
+            card.innerHTML = `
+                ${badgeHTML}
+                <button class="fav-heart-btn" onclick="toggleFavorite(${laptop.id})" title="${isFav ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}">
+                    ${isFav ? '❤️' : '🤍'}
+                </button>
+                <div class="title">${laptop.title}</div>
+                <div class="rating-badge">${ratingText}</div>
+                <div class="store-badge">🛒 En Ucuz: ${laptop.cheapest_store} (${laptop.cheapest_price})</div>
+                <div class="price">${laptop.price}</div>
+                <div class="btn-group">
+                    <button class="btn btn-info" onclick="showDetails(${laptop.id})">🔍 Tüm Özellikler & Mağazalar</button>
+                    <button class="btn btn-chart" onclick="showPriceChart(${laptop.id})">📈 Fiyat Takibi</button>
+                    <button class="btn" onclick="addToCompare(${laptop.id})">⚖️ Karşılaştır</button>
+                </div>
+            `;
+            return card;
+        }
+
+        // SOHBET BOTU MESAJ GÖNDERME MANTIĞI
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBox = document.getElementById('chatBox');
+
+            // Kullanıcı Baloncuğu
+            chatBox.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('http://127.0.0.1:8000/api/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+
+                // Bot Yanıt Baloncuğu
+                let botHTML = `<div class="chat-bubble bot">${data.reply}`;
+                
+                if (data.laptops && data.laptops.length > 0) {
+                    botHTML += `<div class="chat-recommend-cards">`;
+                    data.laptops.forEach(l => {
+                        botHTML += `
+                            <div style="background:var(--card-bg); color:var(--text-color); padding:8px; border-radius:6px; font-size:12px;">
+                                <strong>${l.title}</strong><br>
+                                <span style="color:#2ecc71; font-weight:bold;">${l.price}</span><br>
+                                <button onclick="showDetails(${l.id})" style="margin-top:5px; padding:3px 6px; background:#3498db; color:white; border:none; border-radius:3px; cursor:pointer;">İncele</button>
+                            </div>
+                        `;
+                    });
+                    botHTML += `</div>`;
+                }
+
+                botHTML += `</div>`;
+                chatBox.innerHTML += botHTML;
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+            } catch (err) {
+                chatBox.innerHTML += `<div class="chat-bubble bot">Üzgünüm, şu an öneri sunarken bir bağlantı hatası oluştu.</div>`;
+            }
+        }
+
+        function toggleFavorite(id) {
+            const laptop = allLaptops.find(p => p.id === id);
+            const index = favorites.findIndex(f => f.id === id);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(laptop);
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            renderFavorites();
+            renderProducts(allLaptops);
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favContainer');
+            document.getElementById('favCount').innerText = favorites.length;
+            container.innerHTML = '';
+
+            if (favorites.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--subtext-color);">Henüz favori ürün eklemediniz.</p>';
+                return;
+            }
+
+            favorites.forEach(laptop => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.border = '1px solid #e74c3c';
+                card.innerHTML = `
+                    <button class="fav-heart-btn" onclick="toggleFavorite(${laptop.id})" title="Kaldır">❌</button>
+                    <div class="title">${laptop.title}</div>
+                    <div class="price">${laptop.price}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function showDetails(id) {
+            currentLaptopId = id;
+            const laptop = allLaptops.find(p => p.id === id);
+            const title = laptop.title.toLowerCase();
+
+            document.getElementById('modalTitle').innerText = laptop.title;
+
+            let specsHTML = '';
+            let usageText = '';
+
+            if (title.includes('32gb') || title.includes('32 gb')) {
+                specsHTML += `<div class="info-box"><h4>🧠 32 GB RAM</h4><p>Çok yüksek bellek kapasitesidir. Ağır yazılım geliştirme ve 4K video kurgulamada takılmadan çalışmanızı sağlar.</p></div>`;
+                usageText += '• Yazılım / Yazılım Geliştirme<br>• Professional Video & Grafik Tasarım<br>';
+            } else if (title.includes('16gb') || title.includes('16 gb')) {
+                specsHTML += `<div class="info-box"><h4>🧠 16 GB RAM</h4><p>İdeal standart bellek miktarıdır. Günümüz oyunları ve yoğun çoklu görevler için akıcı bir deneyim sunar.</p></div>`;
+                usageText += '• Güncel Oyunlar (Gaming)<br>• Ofis ve İş Amaçlı Kullanım<br>';
+            } else {
+                specsHTML += `<div class="info-box"><h4>🧠 Standard/8 GB RAM</h4><p>Temel seviye bellek kapasitesidir. İnternette gezinme ve belge hazırlama için uygundur.</p></div>`;
+                usageText += '• Günlük İnternet Kullanımı<br>• Öğrenci & Ders Takibi<br>';
+            }
+
+            if (title.includes('i7') || title.includes('i9') || title.includes('ryzen 7') || title.includes('ryzen 9')) {
+                specsHTML += `<div class="info-box"><h4>⚡ Üst Seviye İşlemci</h4><p>Bilgisayarın çalışma temposu çok yüksektir. Karmaşık hesaplamaları ve ağır programları zorlanmadan çalıştırır.</p></div>`;
+            } else {
+                specsHTML += `<div class="info-box"><h4>⚡ Orta/Temel Seviye İşlemci</h4><p>Günlük işleri ve standart uygulamaları rahat karşılayan dengeli bir yapıdır.</p></div>`;
+            }
+
+            specsHTML += `<div class="info-box"><h4>🚀 ${laptop.ssd || '512 GB NVMe SSD'}</h4><p>Yüksek hızlı depolama alanıdır. Bilgisayarın saniyeler içinde açılmasını ve yüksek boyutlu dosyaların hızlı kopyalanmasını sağlar.</p></div>`;
+            specsHTML += `<div class="info-box"><h4>🖥️ ${laptop.hz || '144 Hz Ekran'}</h4><p>Ekranın saniyedeki tazeleme hızıdır. Yüksek Hz değeri, fare hareketlerinin ve oyunların çok daha akıcı görünmesini sağlar.</p></div>`;
+            specsHTML += `<div class="info-box"><h4>🎨 ${laptop.panel || 'IPS Panel'}</h4><p>Geniş görüş açısı ve canlı renk doğrusallığı sunan kaliteli ekran teknolojisidir. Uzun süre çalışırken gözleri yormaz.</p></div>`;
+            specsHTML += `<div class="info-box"><h4>🔋 ${laptop.battery || '6-8 Saat Pil Ömrü'}</h4><p>Dışarıda, kafede veya okulda şarja takmadan uzun süre kullanım imkanı sunar.</p></div>`;
+
+            document.getElementById('modalSpecs').innerHTML = specsHTML;
+            document.getElementById('modalUsage').innerHTML = usageText;
+
+            const storeBox = document.getElementById('modalStores');
+            storeBox.innerHTML = laptop.stores.map(s => `
+                <div class="store-item">
+                    <span><strong>${s.name}</strong></span>
+                    <span>${s.price}</span>
+                    <a href="${s.url}" target="_blank">Mağazaya Git ↗</a>
+                </div>
+            `).join('');
+
+            await loadReviews(id);
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        async function loadReviews(laptopId) {
+            const listDiv = document.getElementById('reviewsList');
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/api/reviews/${laptopId}`);
+                const reviews = await res.json();
+
+                if (reviews.length === 0) {
+                    listDiv.innerHTML = '<p style="color:var(--subtext-color); font-size:14px;">Henüz bu ürün için yorum yapılmamış. İlk yorumu sen yap!</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = reviews.map(r => `
+                    <div class="review-item">
+                        <strong>${r.user_name}</strong>
+                        <span>${'⭐'.repeat(r.rating)}</span>
+                        <p style="margin:5px 0 0 0; font-size:13px; color:var(--subtext-color);">${r.comment}</p>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listDiv.innerHTML = 'Yorumlar yüklenemedi.';
+            }
+        }
+
+        document.getElementById('submitReviewBtn').addEventListener('click', async () => {
+            const name = document.getElementById('reviewerName').value.trim();
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const comment = document.getElementById('reviewComment').value.trim();
+
+            if (!name || !comment) {
+                alert('Lütfen adınızı ve yorumunuzu yazın!');
+                return;
+            }
+
+            await fetch('http://127.0.0.1:8000/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    laptop_id: currentLaptopId,
+                    user_name: name,
+                    rating: rating,
+                    comment: comment
+                })
+            });
+
+            document.getElementById('reviewerName').value = '';
+            document.getElementById('reviewComment').value = '';
+            await loadReviews(currentLaptopId);
+            await fetchLaptops();
+        });
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allLaptops.filter(laptop => 
+                laptop.title.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        function addToCompare(id) {
+            const product = allLaptops.find(p => p.id === id);
+            if (selectedLaptops.some(p => p.id === id)) {
+                alert('Bu ürün zaten karşılaştırma listesinde!');
+                return;
+            }
+            if (selectedLaptops.length < 2) {
+                selectedLaptops.push(product);
+                updateCompareUI();
+            } else {
+                alert('En fazla 2 ürün karşılaştırabilirsiniz!');
+            }
+        }
+
+        function updateCompareUI() {
+            const container = document.getElementById('compareContainer');
+            const clearBtn = document.getElementById('clearBtn');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 2; i++) {
+                if (selectedLaptops[i]) {
+                    container.innerHTML += `
+                        <div class="compare-card">
+                            <div class="title">${selectedLaptops[i].title}</div>
+                            <div class="price">${selectedLaptops[i].price}</div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML += `<div class="compare-card" style="text-align:center; color:var(--subtext-color);">${i + 1}. Ürünü Seçin</div>`;
+                }
+            }
+
+            clearBtn.style.display = selectedLaptops.length > 0 ? 'block' : 'none';
+        }
+
+        function clearCompare() {
+            selectedLaptops = [];
+            updateCompareUI();
+        }
+
+        initTheme();
+        fetchLaptops();
+    </script>
+</body>
+</html>
