@@ -254,18 +254,6 @@
             flex: 1;
             margin-right: 5px;
         }
-
-        /* Technical Info Button & Modal */
-        .info-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            font-size: 12px;
-            text-decoration: underline;
-            padding: 0;
-            margin-left: 5px;
-        }
     </style>
 </head>
 <body>
@@ -333,24 +321,20 @@
     </div>
 
     <script>
-        // CANLI API ADRESİ (Render)
         const API_BASE_URL = 'https://akilli-teknoloji-rehberi.onrender.com';
 
         let laptopsData = [];
         let comparedLaptops = [];
         let favorites = JSON.parse(localStorage.getItem('fav_laptops')) || [];
 
-        // Sayfa Yüklendiğinde
         window.onload = function() {
             fetchLaptops();
         };
 
-        // Dark Mode Toggle
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
 
-        // Backend'den Laptopları Çekme
         async function fetchLaptops() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/laptops`);
@@ -362,9 +346,9 @@
             }
         }
 
-        // Marka Seçeneklerini Doldurma
         function populateBrandSelect() {
             const brandSelect = document.getElementById('brandSelect');
+            brandSelect.innerHTML = '<option value="">Tüm Markalar</option>';
             const brands = [...new Set(laptopsData.map(item => item.brand))];
             brands.forEach(brand => {
                 const opt = document.createElement('option');
@@ -374,7 +358,6 @@
             });
         }
 
-        // Filtreleme ve Sıralama
         function filterLaptops() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const brand = document.getElementById('brandSelect').value;
@@ -397,7 +380,6 @@
             renderProducts(filtered);
         }
 
-        // Ürün Kartlarını Ekrana Basma
         function renderProducts(data) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
@@ -425,7 +407,6 @@
             });
         }
 
-        // Favorilere Ekle / Çıkar
         function toggleFavorite(id) {
             if (favorites.includes(id)) {
                 favorites = favorites.filter(favId => favId !== id);
@@ -436,7 +417,6 @@
             filterLaptops();
         }
 
-        // Karşılaştırma Listesine Ekle / Çıkar
         function toggleCompare(id) {
             const index = comparedLaptops.findIndex(item => item.id === id);
             if (index > -1) {
@@ -453,7 +433,6 @@
             filterLaptops();
         }
 
-        // Karşılaştırma Tablosunu Çizme
         function renderComparisonTable() {
             const panel = document.getElementById('comparisonPanel');
             const container = document.getElementById('comparisonTableContainer');
@@ -486,7 +465,6 @@
             container.innerHTML = tableHTML;
         }
 
-        // Detay Modalını Açma & Yorumları/Grafiği Yükleme
         async function openDetailModal(id) {
             const laptop = laptopsData.find(item => item.id === id);
             const modalBody = document.getElementById('modalBody');
@@ -524,7 +502,6 @@
             loadReviews(laptop.id);
         }
 
-        // Chart.js Fiyat Grafiği
         function renderPriceChart(currentPrice) {
             const ctx = document.getElementById('priceChart').getContext('2d');
             new Chart(ctx, {
@@ -542,7 +519,6 @@
             });
         }
 
-        // Yorumları Yükleme
         async function loadReviews(laptopId) {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/reviews/${laptopId}`);
@@ -565,7 +541,6 @@
             }
         }
 
-        // Yorum Gönderme
         async function submitReview(laptopId) {
             const userName = document.getElementById('reviewerName').value;
             const comment = document.getElementById('reviewComment').value;
@@ -590,7 +565,6 @@
             }
         }
 
-        // Modal Kapatma
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
@@ -599,7 +573,6 @@
             document.getElementById('techGuideModal').style.display = 'flex';
         }
 
-        // Chatbot İletişimi
         async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
@@ -607,7 +580,6 @@
 
             const chatBody = document.getElementById('chatBody');
 
-            // Kullanıcı mesajı
             const userMsg = document.createElement('div');
             userMsg.className = 'chat-msg user';
             userMsg.innerText = message;
