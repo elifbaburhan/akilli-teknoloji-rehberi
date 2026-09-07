@@ -26,7 +26,6 @@
             --box-bg: #2d2d2d;
         }
 
-        /* İÇERİĞİN SABİTLENEN BARIN ALTINDA KALMAMASI İÇİN ÜSTTEN 80PX BOŞLUK */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: var(--bg-color); 
@@ -36,7 +35,6 @@
             transition: background-color 0.3s, color 0.3s; 
         }
         
-        /* SAYFAYI AŞAĞI KAYDIRINCA KAYBOLMAYAN SABİT HEADER */
         .header-container { 
             position: fixed !important;
             top: 0 !important;
@@ -58,6 +56,7 @@
             display: flex; 
             align-items: center; 
             gap: 10px; 
+            margin-right: 20px; 
         }
         
         .theme-toggle-btn { padding: 8px 14px; background: var(--card-bg); color: var(--text-color); border: 2px solid var(--border-color); border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; transition: all 0.3s; }
@@ -206,11 +205,6 @@
                 <p id="modalUsage"></p>
             </div>
 
-            <div class="store-list-box">
-                <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar</h4>
-                <div id="modalStores"></div>
-            </div>
-
             <div class="review-section">
                 <h3>💬 Kullanıcı Yorumları & Puanlama</h3>
                 <div id="reviewsList">Yorumlar yükleniyor...</div>
@@ -232,7 +226,7 @@
         </div>
     </div>
 
-    <!-- FİYAT TAKİBİ (GRAFİK) MODAL -->
+    <!-- FİYAT TAKİBİ VE MAĞAZALAR (GRAFİK) MODAL -->
     <div class="modal-overlay" id="chartModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('chartModal')">&times;</span>
@@ -243,6 +237,12 @@
                 <canvas id="priceChartCanvas"></canvas>
             </div>
             <div id="discountStatus" style="margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; text-align: center;"></div>
+
+            <!-- GRAFİĞİN ALTINA TAŞINAN VE KÜÇÜKTEN BÜYÜĞE SIRALANAN MAĞAZA FİYATLARI -->
+            <div class="store-list-box">
+                <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar (En Ucuzdan Pahalıya)</h4>
+                <div id="modalStores"></div>
+            </div>
         </div>
     </div>
 
@@ -320,8 +320,8 @@
                 <div class="store-badge">🛒 En Ucuz: ${laptop.cheapest_store} (${laptop.cheapest_price})</div>
                 <div class="price">${laptop.price}</div>
                 <div class="btn-group">
-                    <button class="btn btn-info" onclick="showDetails(${laptop.id})">🔍 Tüm Özellikler & Mağazalar</button>
-                    <button class="btn btn-chart" onclick="showPriceChart(${laptop.id})">📈 Fiyat Takibi</button>
+                    <button class="btn btn-info" onclick="showDetails(${laptop.id})">🔍 Tüm Özellikler & Detaylar</button>
+                    <button class="btn btn-chart" onclick="showPriceChart(${laptop.id})">📈 Fiyat Takibi & Mağazalar</button>
                     <button class="btn" onclick="addToCompare(${laptop.id})">⚖️ Karşılaştır</button>
                 </div>
             `;
@@ -333,6 +333,23 @@
             if (!laptop) return;
 
             document.getElementById('chartTitle').innerText = laptop.title;
+
+            // Mağaza fiyatlarını küçükten büyüğe sıralama
+            const sortedStores = [...laptop.stores].sort((a, b) => {
+                const priceA = parseFloat(a.price.replace(/[^0-9]/g, '')) || 0;
+                const priceB = parseFloat(b.price.replace(/[^0-9]/g, '')) || 0;
+                return priceA - priceB;
+            });
+
+            const storeBox = document.getElementById('modalStores');
+            storeBox.innerHTML = sortedStores.map(s => `
+                <div class="store-item">
+                    <span><strong>${s.name}</strong></span>
+                    <span>${s.price}</span>
+                    <a href="${s.url}" target="_blank">Mağazaya Git ↗</a>
+                </div>
+            `).join('');
+
             openModal('chartModal');
 
             const currentPriceNum = parseFloat(laptop.price.replace(/[^0-9]/g, '')) || 30000;
@@ -492,15 +509,6 @@
 
             document.getElementById('modalSpecs').innerHTML = specsHTML;
             document.getElementById('modalUsage').innerHTML = usageText;
-
-            const storeBox = document.getElementById('modalStores');
-            storeBox.innerHTML = laptop.stores.map(s => `
-                <div class="store-item">
-                    <span><strong>${s.name}</strong></span>
-                    <span>${s.price}</span>
-                    <a href="${s.url}" target="_blank">Mağazaya Git ↗</a>
-                </div>
-            `).join('');
 
             await loadReviews(id);
 
