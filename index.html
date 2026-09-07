@@ -42,7 +42,6 @@
             transition: background-color 0.3s, color 0.3s; 
         }
         
-        /* KESİN SABİTLENEN HEADER */
         .header-container { 
             position: fixed !important;
             top: 0 !important;
@@ -233,7 +232,7 @@
         </div>
     </div>
 
-    <!-- FİYAT TAKİBİ VE SIRALI MAĞAZALAR (GRAFİK) MODAL -->
+    <!-- FİYAT TAKİBİ VE SIRALI MAĞAZALAR MODAL -->
     <div class="modal-overlay" id="chartModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('chartModal')">&times;</span>
@@ -245,7 +244,7 @@
             </div>
             <div id="discountStatus" style="margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; text-align: center;"></div>
 
-            <!-- GRAFİĞİN ALTINDA EN UCUZDAN PAHALIYA SIRALI MAĞAZA FİYATLARI -->
+            <!-- GRAFİĞİN ALTINA TAŞINAN SIRALI MAĞAZA FİYATLARI -->
             <div class="store-list-box">
                 <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar (En Ucuzdan Pahalıya)</h4>
                 <div id="chartStores"></div>
@@ -341,7 +340,7 @@
 
             document.getElementById('chartTitle').innerText = laptop.title;
 
-            // Fiyatlara göre sıralama (En ucuz mağaza en üstte)
+            // Fiyatlara göre küçükten büyüğe sıralama
             const sortedStores = [...laptop.stores].sort((a, b) => {
                 const priceA = parseFloat(a.price.replace(/[^0-9]/g, '')) || 0;
                 const priceB = parseFloat(b.price.replace(/[^0-9]/g, '')) || 0;
