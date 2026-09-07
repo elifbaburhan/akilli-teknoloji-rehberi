@@ -119,7 +119,25 @@
 
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 1000000; justify-content: center; align-items: center; }
         .modal-content { background: var(--card-bg); color: var(--text-color); width: 90%; max-width: 650px; padding: 25px; border-radius: 12px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 22px; cursor: pointer; color: var(--subtext-color); font-weight: bold; }
+        
+        /* AŞAĞI KAYDIRILDIĞINDA ÇARPI İŞARETİNİN EKRANDA SABİT KALMASI İÇİN "sticky" YAPILDI */
+        .close-btn { 
+            position: sticky; 
+            top: 0px; 
+            float: right; 
+            font-size: 26px; 
+            cursor: pointer; 
+            color: var(--subtext-color); 
+            font-weight: bold; 
+            z-index: 10;
+            background: var(--card-bg);
+            border-radius: 50%;
+            padding: 0 8px;
+            margin-top: -10px;
+            margin-right: -10px;
+        }
+
+        .close-btn:hover { color: #e74c3c; }
         
         .info-box { background: var(--box-bg); border-left: 4px solid #3498db; padding: 12px; margin-bottom: 12px; border-radius: 4px; }
         .info-box h4 { margin: 0 0 5px 0; color: var(--text-color); }
@@ -244,9 +262,9 @@
             </div>
             <div id="discountStatus" style="margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; text-align: center;"></div>
 
-            <!-- GRAFİĞİN ALTINA TAŞINAN SIRALI MAĞAZA FİYATLARI -->
+            <!-- BAŞLIKTAN PARANTEZ İÇİ YAZI KALDIRILDI -->
             <div class="store-list-box">
-                <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar (En Ucuzdan Pahalıya)</h4>
+                <h4 style="margin:0 0 10px 0;">🛒 Tüm Mağazalardaki Fiyatlar</h4>
                 <div id="chartStores"></div>
             </div>
         </div>
@@ -340,7 +358,6 @@
 
             document.getElementById('chartTitle').innerText = laptop.title;
 
-            // Fiyatlara göre küçükten büyüğe sıralama
             const sortedStores = [...laptop.stores].sort((a, b) => {
                 const priceA = parseFloat(a.price.replace(/[^0-9]/g, '')) || 0;
                 const priceB = parseFloat(b.price.replace(/[^0-9]/g, '')) || 0;
